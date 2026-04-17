@@ -1,7 +1,6 @@
 import 'dart:io';
 
 void main() {
-
   // Student Data Map
   Map<dynamic, dynamic> studentList = {
     "Fatima": {
@@ -20,11 +19,10 @@ void main() {
     "comments": null,
   };
 
-  
   // Subject List
   final Set<String> subjects = {"Math", "Science", "History", "Literature"};
 
-  // Option
+  // Options Menu
   Map<int, String> options = {
     1: "Add Student",
     2: "Record Score",
@@ -45,6 +43,7 @@ void main() {
     String? option = stdin.readLineSync();
 
     switch (option) {
+      // Option 1: Add Student
       case "1":
         print("Option 1: Add Student");
         stdout.write("Enter student name: ");
@@ -61,7 +60,24 @@ void main() {
 
       case "2":
         print("Option 2: Record Score");
-        break;
+        for (int i = 0; i < studentList.length; i++) {
+          print("${i + 1}. ${studentList.keys.elementAt(i)}");
+        }
+        stdout.write("Select a student by number: ");
+        String? studentOption = stdin.readLineSync();
+        int studentIndex = int.parse(studentOption!) - 1;
+
+        print("Subjects for ${studentList.keys.elementAt(studentIndex)}:");
+
+        studentList[studentList.keys.elementAt(studentIndex)]["subjects"].forEach((subject) {
+          print("- $subject");
+        
+        });
+        
+        // studentList[studentList.keys.elementAt(studentIndex)]["scores"].add(95); 
+        print("Score recorded successfully.");
+        
+
       case "3":
         print("Option 3: Add Bonus Points");
         break;
@@ -83,7 +99,5 @@ void main() {
       default:
         print("Invalid option. Please try again.");
     }
-
-    
   } while (running);
 }
