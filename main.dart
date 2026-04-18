@@ -5,7 +5,7 @@ void main() {
   Map<dynamic, dynamic> studentList = {
     "Fatima": {
       "scores": [85, 90, 78, 92],
-      "subjects": {"Math", "Science", "History", "Literature"},
+      "subjects": ["Math", "Science", "History", "Literature"],
       "bonus": null,
       "comments": null,
     },
@@ -57,26 +57,38 @@ void main() {
         };
 
         print("Student '$studentName' added successfully.");
-
+      // Option 2:
       case "2":
+        // show list of students with numbered order to select student
         print("Option 2: Record Score");
         for (int i = 0; i < studentList.length; i++) {
           print("${i + 1}. ${studentList.keys.elementAt(i)}");
         }
         stdout.write("Select a student by number: ");
         String? studentOption = stdin.readLineSync();
-        int studentIndex = int.parse(studentOption!) - 1;
-
-        print("Subjects for ${studentList.keys.elementAt(studentIndex)}:");
-
-        studentList[studentList.keys.elementAt(studentIndex)]["subjects"].forEach((subject) {
-          print("- $subject");
-        
-        });
-        
-        // studentList[studentList.keys.elementAt(studentIndex)]["scores"].add(95); 
+        String selectedStudent = studentList.keys.elementAt(
+          int.parse(studentOption!) - 1,
+        );
+        // After select student show the subject list
+        var subjectList = studentList[selectedStudent]["subjects"];
+        for (int i = 0; i < subjectList.length; i++) {
+          print("${i + 1} - ${subjectList[i]}");
+        }
+        // choice subject for record score
+        stdout.write("Select the any subject: ");
+        String? selectSub = (stdin.readLineSync());
+        // print for input score
+        stdout.write(
+          "Input the score for ${subjectList[int.parse(selectSub!)-1]}: ",
+        );
+        String? inputScore = stdin.readLineSync();
+        //validate the score between 0 and 100
+        while (int.parse(inputScore!) > 100 && int.parse(inputScore) < 0) {
+          stdout.write("Wrong Score input again: ");
+          inputScore = stdin.readLineSync();
+          subjectList[int.parse(selectSub)-1] = inputScore;
+        }
         print("Score recorded successfully.");
-        
 
       case "3":
         print("Option 3: Add Bonus Points");
