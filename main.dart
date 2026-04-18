@@ -79,23 +79,61 @@ void main() {
         String? selectSub = (stdin.readLineSync());
         // print for input score
         stdout.write(
-          "Input the score for ${subjectList[int.parse(selectSub!)-1]}: ",
+          "Input the score for ${subjectList[int.parse(selectSub!) - 1]}: ",
         );
         String? inputScore = stdin.readLineSync();
         //validate the score between 0 and 100
         while (int.parse(inputScore!) > 100 && int.parse(inputScore) < 0) {
           stdout.write("Wrong Score input again: ");
           inputScore = stdin.readLineSync();
-          subjectList[int.parse(selectSub)-1] = inputScore;
+          subjectList[int.parse(selectSub) - 1] = inputScore;
         }
         print("Score recorded successfully.");
 
       case "3":
+        // Add bonus to Students
         print("Option 3: Add Bonus Points");
-        break;
+        // show list of students with numbered order to select student
+        for (int i = 0; i < studentList.length; i++) {
+          print("${i + 1}. ${studentList.keys.elementAt(i)}");
+        }
+        stdout.write("Select a student by number: ");
+        String? studentOption = stdin.readLineSync();
+        String selectedStudent = studentList.keys.elementAt(
+          int.parse(studentOption!) - 1,
+        );
+        // After select student show the bonus add option
+
+        if (studentList[selectedStudent]["bonus"] != null) {
+          print("Bonus already exists for ${selectedStudent}.");
+        } else {
+          stdout.write("Enter bonus points to add: ");
+          String? bonusValue = stdin.readLineSync();
+          studentList[selectedStudent]["bonus"] ??= [int.parse(bonusValue!)];
+          print("Bonus added successfully.");
+        }
       case "4":
         print("Option 4: Add Comment");
-        break;
+        // Add comment to Students
+        // show list of students with numbered order to select student
+        for (int i = 0; i < studentList.length; i++) {
+          print("${i + 1}. ${studentList.keys.elementAt(i)}");
+        }
+        stdout.write("Select a student by number: ");
+        String? studentOption = stdin.readLineSync(); 
+        String selectedStudent = studentList.keys.elementAt(
+          int.parse(studentOption!) - 1,
+        );
+        stdout.write("Enter comment for ${selectedStudent}: ");
+        String? comment = stdin.readLineSync();
+        if (comment == null || comment.isEmpty) {
+          String display = studentList[selectedStudent]["comments"]?.toUpperCase() ?? "No comment provided\n";
+          print(display);
+          continue;
+        }
+        studentList[selectedStudent]["comments"] ??= comment;
+        print("Comment added successfully.");
+
       case "5":
         print("Option 5: View All Students");
         break;
