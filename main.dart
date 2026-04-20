@@ -86,7 +86,7 @@ void main() {
         while (int.parse(inputScore!) > 100 && int.parse(inputScore) < 0) {
           stdout.write("Wrong Score input again: ");
           inputScore = stdin.readLineSync();
-          subjectList[int.parse(selectSub) - 1] = inputScore;
+          studentList[selectedStudent]["scores"].add(int.parse(inputScore!));
         }
         print("Score recorded successfully.");
 
@@ -120,25 +120,100 @@ void main() {
           print("${i + 1}. ${studentList.keys.elementAt(i)}");
         }
         stdout.write("Select a student by number: ");
-        String? studentOption = stdin.readLineSync(); 
+        String? studentOption = stdin.readLineSync();
         String selectedStudent = studentList.keys.elementAt(
           int.parse(studentOption!) - 1,
         );
         stdout.write("Enter comment for ${selectedStudent}: ");
         String? comment = stdin.readLineSync();
         if (comment == null || comment.isEmpty) {
-          String display = studentList[selectedStudent]["comments"]?.toUpperCase() ?? "No comment provided\n";
+          String display =
+              studentList[selectedStudent]["comments"]?.toUpperCase() ??
+              "No comment provided\n";
           print(display);
           continue;
         }
-        studentList[selectedStudent]["comments"] ??= comment;
+        studentList[selectedStudent]["comments"] ??= [comment];
         print("Comment added successfully.");
 
       case "5":
         print("Option 5: View All Students");
+
+        for (var entry in studentList.entries) {
+          var student = entry.value;
+
+          var tags = [
+            entry.key, // student name
+            "${student["scores"].length} scores",
+            if (student["bonus"] != null) "⭐ Has Bonus",
+          ];
+
+          print("- ${tags.join(", ")}");
+        }
         break;
       case "6":
         print("Option 6: View Report Card");
+        // show list of students with numbered order to select student
+        for (int i = 0; i < studentList.length; i++) {
+          print("${i + 1}. ${studentList.keys.elementAt(i)}");
+        }
+        stdout.write("Select a student by number: ");
+        String? studentOption = stdin.readLineSync();
+        String selectedStudent = studentList.keys.elementAt(
+          int.parse(studentOption!) - 1,
+        );
+        var student = studentList[selectedStudent];
+
+        // Extract data
+        List scores = student["scores"];
+        var bonus = student["bonus"];
+        var comment = student["comments"];
+
+        // Calculate total
+        int total = 0;
+        for (var s in scores) {
+          total += s as int;
+        }
+
+        // Add bonus if exists
+        if (bonus != null) {
+          total += ((bonus is List ? bonus[0] : bonus) as int);
+        }
+
+        // Calculate average
+        double average = scores.isNotEmpty ? total / scores.length : 0;
+
+        // Determine grade
+        String grade;
+        if (average >= 90) {
+          grade = "A";
+        } else if (average >= 80) {
+          grade = "B";
+        } else if (average >= 70) {
+          grade = "C";
+        } else if (average >= 60) {
+          grade = "D";
+        } else {
+          grade = "F";
+        }
+
+        // Format comment
+        String displayComment = comment != null
+            ? comment.toString().toUpperCase()
+            : "NO COMMENT";
+
+        // Print Report Card
+        print("╔══════════════════════════════╗");
+        print("║       REPORT CARD            ║");
+        print("╠══════════════════════════════╝");
+        print("║  Name:    ${selectedStudent.padRight(16)}║");
+        print("║  Scores:  ${scores.toString().padRight(16)}║");
+        print("║  Bonus:   +${bonus ?? 0}".padRight(28) + "║");
+        print("║  Average: ${average.toStringAsFixed(1).padRight(16)}║");
+        print("║  Grade:   ${grade.padRight(16)}║");
+        print("║  Comment: ${displayComment.padRight(16)}║");
+        print("╚══════════════════════════════╝");
+
         break;
       case "7":
         print("Option 7: Class Summary");
